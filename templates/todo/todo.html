@@ -1,0 +1,43 @@
+{{ define "todo/todo.html" }}
+    {{ template "layout/base.html" . }}
+{{ end }}
+
+{{ define "main" }}
+<!-- メインコンテンツ -->
+<div class="container">
+  <div class="col-sm-12 col-md-6 col-xl-4">
+    <div class="h-100 bg-light rounded p-4">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <!-- エラーメッセージ -->
+            {{if .error}}
+            <p style="color: red;">{{.error}}</p>
+            {{end}}
+
+            <h6 class="mb-0">To Do List</h6>
+            <a onclick="toggleCompleted()" id="toggleCompleted">Hide Completed</a>
+        </div>
+
+        <!-- タスク追加フォーム -->
+        <form action="/todo/add" method="post">
+            <div class="form-group d-flex">
+                <input class="form-control bg-transparent" name="task" type="text" placeholder="Enter task">
+                <button type="submit" class="btn btn-primary ms-2">Add</button>
+            </div>
+        </form>
+
+        <!-- Todoリスト表示 -->
+        {{ range .todos }}
+        <div class="d-flex align-items-center border-bottom py-2" id="todo-{{.ID}}" data-completed="{{if .Completed}}true{{else}}false{{end}}">
+            <input class="form-check-input m-0" type="checkbox" id="check-{{.ID}}" {{if .Completed}}checked{{end}} onclick="toggleComplete(`{{.ID}}`)">
+            <div class="w-100 ms-3">
+                <div class="d-flex w-100 align-items-center justify-content-between">
+                    <span id="label-{{.ID}}" {{if .Completed}}style="text-decoration: line-through;"{{end}}>{{ .Task }}</span>
+                    <button class="btn btn-sm" onclick="deleteTodo(`{{.ID}}`)"><i class="fa fa-times"></i></button>
+                </div>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+  </div>
+</div>
+{{ end }}
